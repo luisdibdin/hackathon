@@ -7,6 +7,9 @@ install.packages("tidyverse", dependencies = TRUE, type = "win.binary")
 
 install.packages("devtools", dependencies = TRUE, type = "win.binary")
 
+install.packages("cowplot", dependencies = TRUE, type = "win.binary")
+
+library(cowplot)
 library(lubridate)
 
 ################################################################################
@@ -102,7 +105,35 @@ group_cat <- group_cat[, 1:2]
 colnames(group_cat)[2] <- "climate" 
 
 ACLED_UK_clean <- dplyr::left_join(ACLED_UK_clean, group_cat, by = c("action_group" = "Group"))
+unique(ACLED_UK_clean$climate)
+
+ACLED_UK_clean$climate[ACLED_UK_clean$climate == "N "] = "N"
+ACLED_UK_clean$climate = as.factor(ACLED_UK_clean$climate)
+
+ACLED_UK_clean$year = as.factor(ACLED_UK_clean$year)
 
 write.csv(ACLED_UK_clean, file = "hackathon/ACLED_UK_clean.csv")
 
 ################################################################################
+
+## random plots because why not
+
+
+ACLED_UK_clean$year = as.factor(ACLED_UK_clean$year)
+
+ggplot(ACLED_UK_clean, aes(climate, fill = climate)) +
+  geom_bar() +
+  labs(x = "Climate related protest?") +
+  facet_wrap(~year) +
+  theme_cowplot(16)
+
+ggplot(ACLED_UK_clean, aes(x = year, y = 1, fill = climate)) +
+  geom_bar(position="stack", stat="identity") +
+  labs(x = "Climate related protest?", y = "") +
+  theme_cowplot(16) 
+
+
+ggplot(ACLED_UK_clean, aes(x = year, y = 1, fill = climate)) +
+  geom_bar(position="fill", stat="identity") +
+  labs(x = "Climate related protest?", y = "") +
+  theme_cowplot(16) 
