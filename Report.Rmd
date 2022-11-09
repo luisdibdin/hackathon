@@ -12,7 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r libraries, include=FALSE}
 library(leaflet)
 library(tmap)
-library(tidyverse)
+library(ggplot2)
+library(cowplot)
+library(viridis)
 library(plotly)
 library(readODS)
 ```
@@ -51,21 +53,104 @@ distinct_protests <- Climate_protests %>%
 ### Where are protests happening?
 
 ```{r occurrence, echo=FALSE}
+
 tmap::tmap_leaflet(
   tmap::tm_shape(distinct_protests) +
-    tmap::tm_symbols(col = "sub_event_type")+
-    tmap::tm_layout(symbol.size.fixed = F)
+    tmap::tm_symbols(col = "sub_event_type",
+                     size = 0.05,
+                     clustering = F,
+                     title.col="Protest type",
+                     id = "Protest",
+                     popup.vars = c("Protest by: " = "action_group",
+                                    "Date: " = "date")) +
+    tm_view(
+    alpha = 0.8,
+    symbol.size.fixed = TRUE
+    )
   )  
 ```
 
 ### Which groups are growing membership?
 ```{r groups, echo=FALSE}
-plot(UK_sf)
 ```
+### opinion on climate from opn
+```{r, echo = FALSE}
+
+opn <- read.csv("OPN-data.csv")
+
+
+## bar plots 
+colnames(opn)[3] <- "All.Regions"
+opn_long <- tidyr::gather(opn, region, percentage, All.Regions:South.West, factor_key=TRUE)
+
+opn_long$region <- gsub("\\.", " ", opn_long$region)
+colnames(opn_long)[1] <- "opinion"
+opn_long$percentage <- as.numeric(opn_long$percentage)
+
+
+# each table needs to be its own object 
+table1 <- opn_long[opn_long$Table == "1",]
+table2 <- opn_long[opn_long$Table == "2",]
+table3 <- opn_long[opn_long$Table == "3",]
+table4 <- opn_long[opn_long$Table == "4",]
+
+
+ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  ggtitle("How positive or negative do you currently feel when \nyou think about the future of the environment?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
+
+
+ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  ggtitle("How worried or unworried are you about the impact of climate change?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
+
+
+ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  ggtitle("Over the past month how anxious, if at all, \nhave you felt about the future of the environment?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
+
+ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Number of votes", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
+```
+## References
+
 
 ### Public Support for Policies
 
-```{r}
+```{r, echo = F}
 
 beis_spreadsheet <- read.ods("BEIS_Data_Tables.ods")
 
@@ -145,7 +230,7 @@ for(i in 1:length(tables)){
   
 }
 
-statement2 <- str_wrap(statement, width = 15)
+statement2 <- stringr::str_wrap(statement, width = 15)
 
 ### Use red, amber, green colours
 #my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
@@ -210,5 +295,4 @@ fig
 
 
 ```
-
 ## References
