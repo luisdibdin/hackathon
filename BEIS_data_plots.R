@@ -88,6 +88,14 @@ category <- c("end to fuel car sales by 2035",
                 "emissions labelling on food/drink")
 
 
+for(i in 1:6){
+  
+  tables[[i]] <- tables[[i]] %>% 
+    mutate(cat = category[i]) ### add var for category
+  
+}
+
+
 support <- c()
 
 
@@ -105,14 +113,18 @@ statement <- c()
 
 for(i in 1:length(tables)){
   
-  this_statement <- paste0(support[i], "% support\n", category[i])
+  this_statement <- paste0(support[i], "% support ", category[i])
   statement <- c(statement, this_statement)
   
 }
 
 statement
 
-my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
+statement2 <- str_wrap(statement, width = 15)
+
+#my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
+my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232", "#888888") ## use traffic light colour system
+
 
 row <- c(0,0,0,
          1,1,1)
@@ -121,20 +133,43 @@ column <- c(0,1,2,
 
 fig <- plot_ly(marker = list(colors = my_colours))
 
+x_centres <- rep(c(2/13, 1/2, 11/13), 2)
+y_centres <- c(rep(5/6, 3), rep(1/6, 3))
+
 for(i in c(1:6)){
   
   fig <- fig %>% add_pie(data = tables[[i]], labels = ~support, values = ~perc, 
                          name = category[i],
                          textinfo = "none",
                          hoverinfo = "text",
-                         text = ~paste(
-                           '</br>', category[i], 
+                         text = ~ paste0(
+                           '</br>', cat, 
                            '</br>', support, ": ", round(100*as.numeric(perc), 1), "%"),
                          domain = list(row = row[i], column = column[i]), hole = 0.6,
                          direction = "clockwise",
-                         sort = FALSE) #%>%
+                         sort = FALSE) %>%
+    add_annotations(x = x_centres[i],
+                    y = y_centres[i],
+                    text = statement2[i],
+                    xref = "paper",
+                    yref = "paper",
+                    xanchor = "center",
+                    yanchor = "center",
+                    showarrow = FALSE)
     #layout(annotations = list(text = statement[i]))
 }
+
+
+# annotations = list(
+#   list(x = 1/3,
+#         y = 0.25,
+#         text = statement[1],
+#         xref = "paper",
+#         yref = "paper",
+#         #xanchor = "center",
+#         #yanchor = "center",
+#         showarrow = FALSE)
+# )
 
 fig <- fig %>% layout(title = "Public Agreement to Climate Policies", showlegend = T,
                       grid=list(rows=2, columns=3),
@@ -142,7 +177,10 @@ fig <- fig %>% layout(title = "Public Agreement to Climate Policies", showlegend
                       yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                       legend = list(orientation = "h",
                                     xanchor = "center",
-                                    x = 0.5))
+                                    x = 0.5))#,
+                      #annotations = annotations)
+
+
 
 
 fig
@@ -172,4 +210,5 @@ fig
 
 #htmlwidgets::saveWidget(as_widget(fig), "policies_support.html")
 
-htmlwidgets::saveWidget(as_widget(fig), "policies_support2.html")
+#htmlwidgets::saveWidget(as_widget(fig), "policies_support2.html")
+htmlwidgets::saveWidget(as_widget(fig), "policies_support3.html")
