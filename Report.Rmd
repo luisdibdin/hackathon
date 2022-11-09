@@ -145,8 +145,6 @@ for(i in 1:length(tables)){
   
 }
 
-statement
-
 statement2 <- str_wrap(statement, width = 15)
 
 ### Use red, amber, green colours
