@@ -323,7 +323,7 @@ for (i in table_seq){
   iter <- iter + 1
   
   start <- i+92
-  end <- i+97
+  end <- i+98
   
   this_table <- actions[c(start:end),] %>% 
     select(support = B, perc = H) 
