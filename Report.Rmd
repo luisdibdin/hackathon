@@ -51,18 +51,26 @@ distinct_protests <- Climate_protests %>%
 ### Where are protests happening?
 
 ```{r occurrence, echo=FALSE}
-tmap::tm_shape(distinct_protests) +
-    tmap::tm_symbols(col = "sub_event_type")  
-tmap::tmap_mode("view")
 
+tmap::tmap_leaflet(
+  tmap::tm_shape(distinct_protests) +
+    tmap::tm_symbols(col = "sub_event_type",
+                     size = 0.05,
+                     clustering = F,
+                     title.col="Protest type",
+                     id = "Protest",
+                     popup.vars = c("Protest by: " = "action_group",
+                                    "Date: " = "date")) +
+    tm_view(
+    alpha = 0.8,
+    symbol.size.fixed = TRUE
+    )
+  )  
 ```
 
 ### Which groups are growing membership?
 ```{r groups, echo=FALSE}
-plot(UK_sf)
 ```
-## References
-
 ## opinion on climate from opn
 ```{r, include = FALSE}
 
@@ -134,7 +142,5 @@ ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
   ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
-
-
-
 ```
+## References
