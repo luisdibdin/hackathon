@@ -40,6 +40,7 @@ distinct_protests <- Climate_protests %>%
 ```
 
 ## Introduction
+This report brings together information on different metrics for measuring the UK population’s perceptions of climate change, with the aim of providing a resource for policy makers to monitor the impact of climate change and associated policies on UK society.
 
 ## Methods
 
