@@ -1,29 +1,24 @@
 
-library(tidyverse)
-library(plotly)
-library(readxl)
-library(readODS)
-
 beis_spreadsheet <- read.ods("BEIS_Data_Tables.ods")
 
 
-### Policies ######## 
+### actions ######## 
 
-policies <- beis_spreadsheet[[14]] %>% 
+actions <- beis_spreadsheet[[10]] %>% 
   select(A, B, H)
 
-unique(policies$A) ## What are the different tables?
+unique(actions$A) ## What are the different tables?
 
 ## checking format of tables
-table61 <- policies[c(5:10),] %>% 
+table61 <- actions[c(5:11),] %>% 
   select(support = B, perc = H)
 
 #################### Format data ##########################################
 
 ### Generate all tables as list
 
-## Each table is indexed in the same way, every 14 lines - so loop through to get these
-table_seq <- seq(1, 71, by = 14) 
+## Each table is indexed in the same way, every 15 lines - so loop through to get these (Do top 4 seperately as in different format)
+table_seq <- seq(1, 46, by = 15) 
 
 tables <- list()
 iter <- 0
@@ -33,9 +28,9 @@ for (i in table_seq){
   iter <- iter + 1
   
   start <- i+4
-  end <- i+9
+  end <- i+10
   
-  this_table <- policies[c(start:end),] %>% 
+  this_table <- actions[c(start:end),] %>% 
     select(support = B, perc = H) 
   
   this_table <- this_table %>% 
@@ -45,21 +40,19 @@ for (i in table_seq){
   
 }
 
-table1 <- tables[[1]]
+table1 <- tables[[4]]
 
 
 ### Create policy labels
 
-category <- c("end to fuel car sales by 2035",
-                "end to flight incentives",
-                "frequent flier levy",
-                "high emisssion product advertising bans",
-                "citizens steering group for target monitoring",
-                "emissions labelling on food/drink")
+category <- c("use a green energy supplier",
+              "use a smart meter",
+              "eat mainly plant-based meals",
+              "minimise food waste")
 
 ### Add category to each table to allow easier labelling in plotly
 
-for(i in 1:6){
+for(i in 1:4){
   
   tables[[i]] <- tables[[i]] %>% 
     mutate(cat = category[i]) ### add var for category
@@ -71,10 +64,10 @@ for(i in 1:6){
 
 support <- c()
 
-### Get % that support policies overall
+### Get % that support actions overall
 for(i in tables){
   
-  perc_support <- sum(as.numeric(i[c(1, 2), 2])) ## take from top two rows of each columns
+  perc_support <- sum(as.numeric(i[c(1, 3), 2])) ## take from top two rows of each columns
   perc_support <- round(100*perc_support, digits = 0)
   
   support <- c(support, perc_support)
@@ -86,7 +79,7 @@ statement <- c()
 
 for(i in 1:length(tables)){
   
-  this_statement <- paste0(support[i], "% support ", category[i])
+  this_statement <- paste0(support[i], "% at least likely to ", category[i])
   statement <- c(statement, this_statement)
   
 }
@@ -98,28 +91,33 @@ statement2 <- str_wrap(statement, width = 15)
 ### Use red, amber, green colours
 #my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
 my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232")#, "#888888") ## use traffic light colour system
-my_colours <- c(scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
+my_colours <- c("#238b45", scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
 
 
 ######################## Plot ###############################################
 
 # Set grid coordinaetes for plots 
-row <- c(0,0,0,
-         1,1,1)
-column <- c(0,1,2,
-            0,1,2)
+row <- c(0,0,
+         1,1)
+column <- c(0,1,
+            0,1)
+
+
+
+
+
 
 ## Initiate plot_ly figure and set colours 
 
 fig <- plot_ly(marker = list(colors = my_colours))
 
 ## set centres of each subplot
-x_centres <- rep(c(2/13, 1/2, 11/13), 2) ## This was done through trial and error, may need to adjust in markdown
-y_centres <- c(rep(5/6, 3), rep(1/6, 3))
+x_centres <- rep(c(2.1/9, 6.9/9), 2) ## This was done through trial and error, may need to adjust in markdown
+y_centres <- c(rep(5/6, 2), rep(1/6, 2))
 
 
 ### Create each subplot
-for(i in c(1:6)){
+for(i in c(1:4)){
   
   fig <- fig %>% add_pie(data = tables[[i]], labels = ~support, values = ~perc, 
                          name = category[i],
@@ -139,12 +137,12 @@ for(i in c(1:6)){
                     xanchor = "center",
                     yanchor = "center",
                     showarrow = FALSE)
-    #layout(annotations = list(text = statement[i]))
+  #layout(annotations = list(text = statement[i]))
 }
 
 ## Format
-fig <- fig %>% layout(title = "Public Support of Climate Policies", showlegend = T,
-                      grid=list(rows=2, columns=3),
+fig <- fig %>% layout(title = "Liklihood of making changes in the next 6 months", showlegend = T,
+                      grid=list(rows=2, columns=2),
                       xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                       yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                       legend = list(orientation = "h",
@@ -156,13 +154,6 @@ fig <- fig %>% layout(title = "Public Support of Climate Policies", showlegend =
 ## Final figure
 fig
 
-## Save as html widget
-htmlwidgets::saveWidget(as_widget(fig), "policies_support3.html")
 
 
-### https://plotly.com/r/subplots/ <- has infor on titling subplots
-
-
-### repeat for other indicators???
-
-
+htmlwidgets::saveWidget(as_widget(fig), "beis_actions.html")
