@@ -147,7 +147,7 @@ for(i in c(1:6)){
 }
 
 ## Format
-fig <- fig %>% layout(title = "Public Agreement to Climate Policies", showlegend = T,
+fig <- fig %>% layout(title = "Public Support of Climate Policies", showlegend = T,
                       grid=list(rows=2, columns=3),
                       xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
                       yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
