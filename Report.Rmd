@@ -72,14 +72,14 @@ tmap::tmap_leaflet(
 ```{r groups, echo=FALSE}
 ```
 ## opinion on climate from opn
-```{r, include = FALSE}
+```{r, echo = FALSE}
 
 opn <- read.csv("OPN-data.csv")
 
 
 ## bar plots 
 colnames(opn)[3] <- "All.Regions"
-opn_long <- gather(opn, region, percentage, All.Regions:South.West, factor_key=TRUE)
+opn_long <- tidyr::gather(opn, region, percentage, All.Regions:South.West, factor_key=TRUE)
 
 opn_long$region <- gsub("\\.", " ", opn_long$region)
 colnames(opn_long)[1] <- "opinion"
@@ -100,8 +100,8 @@ ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("How positive or negative do you currently feel when \nyou think about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
 
@@ -113,8 +113,8 @@ ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("How worried or unworried are you about the impact of climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
@@ -126,8 +126,8 @@ ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("Over the past month how anxious, if at all, \nhave you felt about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
@@ -138,8 +138,8 @@ ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   labs(y = "Number of votes", 
        x = "Region",
        fill = "") +
-  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
 ```
