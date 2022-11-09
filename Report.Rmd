@@ -59,4 +59,12 @@ tmap::tmap_leaflet(
 ```{r groups, echo=FALSE}
 plot(UK_sf)
 ```
+
+### Public Support for Policies
+
+```{r}
+
+
+```
+
 ## References
