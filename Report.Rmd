@@ -1,0 +1,42 @@
+---
+title: "UN Hackathon"
+author: "ONS Health Surveillance"
+date: "08/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, include=FALSE}
+library(leaflet)
+library(tmap)
+```
+
+```{r read_data, include=FALSE}
+load("UK_data_uncleaned.Rdata")
+protest_data <- UK_data_uncleaned[[1]]
+UK_sf <- rnaturalearth::ne_countries(scale = 50, country = "United Kingdom", returnclass = "sf") 
+```
+
+## Introduction
+
+## Methods
+
+## Tools {.tabset}
+
+### Where are protests happening?
+
+```{r occurrence, echo=FALSE}
+tmap::tm_shape(UK_sf) +
+  tmap::tm_fill()
+
+
+```
+
+### Which groups are growing membership?
+```{r groups, echo=FALSE}
+plot(UK_sf)
+```
+## References
