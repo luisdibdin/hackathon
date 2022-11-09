@@ -48,15 +48,26 @@ distinct_protests <- Climate_protests %>%
 ### Where are protests happening?
 
 ```{r occurrence, echo=FALSE}
+
 tmap::tmap_leaflet(
   tmap::tm_shape(distinct_protests) +
-    tmap::tm_symbols(col = "sub_event_type")+
-    tmap::tm_layout(symbol.size.fixed = F)
+    tmap::tm_symbols(col = "sub_event_type",
+                     size = 0.05,
+                     clustering = F,
+                     title.col="Protest type",
+                     id = "Protest",
+                     popup.vars = c("Protest by: " = "action_group",
+                                    "Date: " = "date")) +
+    tm_view(
+    alpha = 0.8,
+    symbol.size.fixed = TRUE
+    )
   )  
 ```
 
 ### Which groups are growing membership?
 ```{r groups, echo=FALSE}
-plot(UK_sf)
+
+
 ```
 ## References
