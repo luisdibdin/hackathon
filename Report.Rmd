@@ -1,8 +1,16 @@
 ---
 title: "UN Hackathon"
 author: "ONS Health Surveillance"
-date: "08/11/2022"
-output: html_document
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 6
+    number_sections: false
+    toc_float: true
+    code_folding: hide
+    theme: flatly
 ---
 
 ```{r setup, include=FALSE}
@@ -44,14 +52,14 @@ distinct_protests <- Climate_protests %>%
   dplyr::ungroup()
 ```
 
-## Introduction
+# Introduction
 This report brings together information on different metrics for measuring the UK population’s perceptions of climate change, with the aim of providing a resource for policy makers to monitor the impact of climate change and associated policies on UK society.
 
-## Methods
+# Methods
 
-## Tools {.tabset}
+# Tools {.tabset}
 
-### Where are protests happening?
+## Where are protests happening?
 
 ```{r occurrence, echo=FALSE}
 
@@ -71,10 +79,15 @@ tmap::tmap_leaflet(
   )  
 ```
 
-### Which groups are growing membership?
+## Which groups are growing membership?
 ```{r groups, echo=FALSE}
 ```
-### opinion on climate from opn
+
+## {-}
+
+# Opinion on climate from OPN {.tabset}
+
+## Plot 1
 ```{r, echo = FALSE}
 
 opn <- read.csv("OPN-data.csv")
@@ -108,6 +121,10 @@ ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
   ggtitle("How positive or negative do you currently feel when \nyou think about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
 
+```
+
+## Plot 2
+```{r}
 
 ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
@@ -120,6 +137,12 @@ ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
   scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("How worried or unworried are you about the impact of climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
+
+```
+
+
+## Plot 3
+```{r}
 
 
 ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
@@ -134,6 +157,10 @@ ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
   ggtitle("Over the past month how anxious, if at all, \nhave you felt about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
+```
+
+## Plot 4
+```{r}
 ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
   theme_cowplot(16) + 
@@ -146,10 +173,10 @@ ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
 ```
-## References
 
+## {-}
 
-### Public Support for Policies
+# Public Support for Policy changes
 
 ```{r, echo = F}
 
@@ -296,4 +323,6 @@ fig
 
 
 ```
-## References
+
+
+# References
