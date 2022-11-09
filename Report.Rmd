@@ -12,6 +12,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r libraries, include=FALSE}
 library(leaflet)
 library(tmap)
+library(ggplot2)
+library(cowplot)
+library(viridis)
 ```
 
 ```{r read_data, include=FALSE}
@@ -59,3 +62,79 @@ tmap::tmap_mode("view")
 plot(UK_sf)
 ```
 ## References
+
+## opinion on climate from opn
+```{r, include = FALSE}
+
+opn <- read.csv("OPN-data.csv")
+
+
+## bar plots 
+colnames(opn)[3] <- "All.Regions"
+opn_long <- gather(opn, region, percentage, All.Regions:South.West, factor_key=TRUE)
+
+opn_long$region <- gsub("\\.", " ", opn_long$region)
+colnames(opn_long)[1] <- "opinion"
+opn_long$percentage <- as.numeric(opn_long$percentage)
+
+
+# each table needs to be its own object 
+table1 <- opn_long[opn_long$Table == "1",]
+table2 <- opn_long[opn_long$Table == "2",]
+table3 <- opn_long[opn_long$Table == "3",]
+table4 <- opn_long[opn_long$Table == "4",]
+
+
+ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  ggtitle("How positive or negative do you currently feel when \nyou think about the future of the environment?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
+
+
+ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  ggtitle("How worried or unworried are you about the impact of climate change?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
+
+
+ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  ggtitle("Over the past month how anxious, if at all, \nhave you felt about the future of the environment?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
+
+ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(16) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(y = "Number of votes", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels = function(x) str_wrap(x, width = 30)) +
+  ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
+
+
+
+```
