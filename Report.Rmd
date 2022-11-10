@@ -297,3 +297,9 @@ fig
 
 ```
 ## References
+ACLED Data on Global Protests:  Data Export Tool - ACLED (acleddata.com)
+BEIS Survey on Public Awareness and Perceptions of Climate Change: Climate change and net zero: public awareness and perceptions - GOV.UK (www.gov.uk)
+Lloyds Risk Poll for Resilience from 2021: World Risk Poll Resilience Index - The Lloyd's Register Foundation World Risk Poll (lrfoundation.org.uk)
+Options and Lifestyle Survey (ONS): Data on public attitudes to the environment and the impact of climate change, Great Britain - Office for National Statistics (ons.gov.uk)
+The Climate Change Twitter Dataset: The Climate Change Twitter Dataset | Kaggle
+Twitter Follower Information: https://socialblade.com/ 
