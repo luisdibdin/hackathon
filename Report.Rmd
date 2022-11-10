@@ -60,66 +60,81 @@ distinct_protests <- Climate_protests %>%
 # Introduction
 This report brings together information on different metrics for measuring the UK population’s perceptions of climate change, with the aim of providing a resource for policy makers to monitor the impact of climate change and associated policies on UK society.
 
-# Methods
+# Public Perception of climate change threat 
 
-# Tools {.tabset}
 
-## Where are protests happening?
+## Global worry
 
-```{r occurrence, echo=FALSE}
-
-tmap::tmap_leaflet(
-  tmap::tm_shape(distinct_protests) +
-    tmap::tm_symbols(col = "sub_event_type",
-                     size = 0.05,
-                     clustering = F,
-                     title.col="Protest type",
-                     id = "Protest",
-                     popup.vars = c("Protest by: " = "action_group",
-                                    "Date: " = "date")) +
-    tm_view(
-    alpha = 0.8,
-    symbol.size.fixed = TRUE
-    )
-  )  
+```{r global_map, echo=FALSE}
+# htmltools::includeHTML("concern_map.html") # need the map from Luis
 ```
 
-## Which groups are growing membership?
-```{r groups, echo=FALSE}
+```{r concern_bar, echo=FALSE}
+# htmltools::includeHTML("concern_bar.html") # need the map from Luis
+```
 
-twitter_data <- read.csv("tidy_twitter_data.csv")
-twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
 
-twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
 
-twitter_data$Date <- lubridate::my(twitter_data$Date)
-twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`)
+## Overall
 
-trends <- ggplot(twitter_data) +
-  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
+```{r}
+LRP_UK <- read.csv("LRP_UK_clean.csv")
 
-plotly::ggplotly(trends)
+#### Overall figures of concerns
+
+LRP_UK <- LRP_UK %>% 
+  mutate(
+    threat_percieved = case_when(Q3 == 1 ~ "Very serious",
+                                 Q3 == 2 ~ "Somewhat serious",
+                                 Q3 == 3 ~ "Not a threat at all",
+                                 Q3 == 98 ~ "Don't know")
+  )
+
+
+threat_props <- LRP_UK %>% 
+  filter(!is.na(threat_percieved)) %>% 
+  group_by(Year) %>% 
+  count(threat_percieved) %>% 
+  mutate(perc = 100*n/sum(n))
+
+
+### Set colours
+my_colours <- c(viridis(3, direction = -1), "#888888") 
+
+
+fig <- plot_ly(threat_props, 
+               x = ~perc, 
+               y = ~Year, 
+               color = ~threat_percieved,
+               name = ~threat_percieved,
+               type = "bar",
+               orientation = "h",
+               colors = rev(my_colours),
+               hoverinfo = "text",
+               text = ~ paste0(
+                 '</br>', threat_percieved, ":", 
+                 '</br>', round(perc, 1), "%")) %>% 
+  layout(
+    title = "Perception of Climate Change Threat to Country in the Next 20 Years",
+    barmode = "stack",
+    xaxis = list(title = FALSE),
+    yaxis = list(showgrid = FALSE, zeroline = FALSE, title = FALSE, tickvals = c(2019, 2021)),
+    legend = list(orientation = "h",
+                  xanchor = "center",
+                  x = 0.5))
+
+fig
+
 
 
 ```
 
-## Which groups are searched for on google?
-```{r gtrends, echo = F}
-interest_over_time <- readr::read_csv("gtrends_interest_over_time.csv")
-a <- ggplot(interest_over_time)+
-  geom_line(aes(x = date, y = as.numeric(hits), colour = keyword))
 
-b <-  plotly::ggplotly(a)
 
-b
 
-```
+# Opinion on climate {.tabset}
 
-## {-}
-
-# Opinion on climate from OPN {.tabset}
-
-## Attitute towards Future Environment
+## Attitute towards future environment
 ```{r, fig.width=8, echo = FALSE, fig.height=6}
 
 opn <- read.csv("OPN-data.csv")
@@ -201,7 +216,7 @@ ggplotly(p2)
 ```
 
 
-## Anxiety over Future Environment
+## Anxiety over future environment
 ```{r, fig.width=8, fig.height=6}
 
 p3 = ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
@@ -222,82 +237,9 @@ ggplotly(p3)
 
 ```
 
-## Lifestyle Change Barriers
-```{r, fig.width=8, fig.height=15}
-p4 = ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
-  geom_bar(position="stack", stat="identity") +
-  theme_cowplot(12) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position = "none",
-        plot.margin = margin(4,1,1,1.2, "cm")) +
-  labs(y = "Percentage (%)", 
-       x = "Region",
-       fill = "") +
-  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels= function(x) stringr::str_wrap(x, width = 30),                         direction = -1) +
-  ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
-  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) +
-  facet_wrap(~opinion, ncol = 1)
 
-ggplotly(p4)
-```
 
 ## {-}
-
-# Public Perception of climate change threat 
-
-## Overall
-
-```{r}
-LRP_UK <- read.csv("LRP_UK_clean.csv")
-
-#### Overall figures of concerns
-
-LRP_UK <- LRP_UK %>% 
-  mutate(
-    threat_percieved = case_when(Q3 == 1 ~ "Very serious",
-                                 Q3 == 2 ~ "Somewhat serious",
-                                 Q3 == 3 ~ "Not a threat at all",
-                                 Q3 == 98 ~ "Don't know")
-  )
-
-
-threat_props <- LRP_UK %>% 
-  filter(!is.na(threat_percieved)) %>% 
-  group_by(Year) %>% 
-  count(threat_percieved) %>% 
-  mutate(perc = 100*n/sum(n))
-
-
-### Set colours
-my_colours <- c(viridis(3, direction = -1), "#888888") 
-
-
-fig <- plot_ly(threat_props, 
-               x = ~perc, 
-               y = ~Year, 
-               color = ~threat_percieved,
-               name = ~threat_percieved,
-               type = "bar",
-               orientation = "h",
-               colors = rev(my_colours),
-               hoverinfo = "text",
-               text = ~ paste0(
-                 '</br>', threat_percieved, ":", 
-                 '</br>', round(perc, 1), "%")) %>% 
-  layout(
-    title = "Perception of Climate Change Threat to Country in the Next 20 Years",
-    barmode = "stack",
-    xaxis = list(title = FALSE),
-    yaxis = list(showgrid = FALSE, zeroline = FALSE, title = FALSE, tickvals = c(2019, 2021)),
-    legend = list(orientation = "h",
-                  xanchor = "center",
-                  x = 0.5))
-
-fig
-
-
-
-```
 
 
 ## Effect of demographics on perceptions
@@ -975,7 +917,82 @@ fig
 
 ```
 
+## Barriers to Personal Change
+```{r, fig.width=8, fig.height=15}
+p4 = ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
+  geom_bar(position="stack", stat="identity") +
+  theme_cowplot(12) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position = "none",
+        plot.margin = margin(4,1,1,1.2, "cm")) +
+  labs(y = "Percentage (%)", 
+       x = "Region",
+       fill = "") +
+  scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
+  scale_fill_viridis_d(labels= function(x) stringr::str_wrap(x, width = 30),                         direction = -1) +
+  ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) +
+  facet_wrap(~opinion, ncol = 1)
+
+ggplotly(p4)
+```
+
 ## {-}
+
+# Protests {.tabset}
+
+## Where are protests happening?
+
+```{r occurrence, echo=FALSE}
+
+tmap::tmap_leaflet(
+  tmap::tm_shape(distinct_protests) +
+    tmap::tm_symbols(col = "sub_event_type",
+                     size = 0.05,
+                     clustering = F,
+                     title.col="Protest type",
+                     id = "Protest",
+                     popup.vars = c("Protest by: " = "action_group",
+                                    "Date: " = "date")) +
+    tm_view(
+    alpha = 0.8,
+    symbol.size.fixed = TRUE
+    )
+  )  
+```
+
+## Which groups are growing membership?
+```{r groups, echo=FALSE}
+
+twitter_data <- read.csv("tidy_twitter_data_char_removed.csv")
+twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
+
+twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
+
+twitter_data$Date <- lubridate::my(twitter_data$Date)
+twitter_data <- dplyr::rename(twitter_data, `Protest group` = `Twitter.Handle`)
+
+trends <- ggplot(twitter_data) +
+  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
+
+plotly::ggplotly(trends)
+
+
+```
+
+## Which groups are searched for on google?
+```{r gtrends, echo = F}
+interest_over_time <- readr::read_csv("gtrends_interest_over_time.csv")
+a <- ggplot(interest_over_time)+
+  geom_line(aes(x = date, y = as.numeric(hits), colour = keyword))
+
+b <-  plotly::ggplotly(a)
+
+b
+
+```
+
+## {-}
+
 
 
 # References
