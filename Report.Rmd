@@ -478,7 +478,7 @@ fig <- plot_ly(marker = list(colors = my_colours))
 
 ## set centres of each subplot
 x_centres <- rep(c(2/13, 1/2, 11/13), 2) ## This was done through trial and error, may need to adjust in markdown
-y_centres <- c(rep(5/6, 3), rep(1/6, 3))
+y_centres <- c(rep(5/6, 3), rep(2/15, 3))
 
 
 ### Create each subplot
@@ -501,7 +501,8 @@ for(i in c(1:6)){
                     yref = "paper",
                     xanchor = "center",
                     yanchor = "center",
-                    showarrow = FALSE)
+                    showarrow = FALSE,
+                    textfont = list(family = "sans serif", size = 12))
     #layout(annotations = list(text = statement[i]))
 }
 
