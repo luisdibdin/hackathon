@@ -4,11 +4,7 @@ library(plotly)
 library(readxl)
 library(readODS)
 
-setwd("D:/Joel/Docs/Hackathon/")
-
 beis_spreadsheet <- read.ods("BEIS_Data_Tables.ods")
-
-
 
 
 ### Policies ######## 
