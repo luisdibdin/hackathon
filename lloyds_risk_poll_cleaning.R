@@ -67,10 +67,10 @@ lloyds_uk_clean<- lloyds_uk %>%
   mutate(
     Age = as.numeric(Age),
     AgeGroup = case_when(
-      AgeGroups4 == 1 ~ "15-29",
-      AgeGroups4 == 2 ~ "30-49",
-      AgeGroups4 == 3 ~ "50-64",
-      AgeGroups4 == 4 ~ "65-94"
+      AgeGroups4 == 1 ~ "15_29",
+      AgeGroups4 == 2 ~ "30_49",
+      AgeGroups4 == 3 ~ "50_64",
+      AgeGroups4 == 4 ~ "65_94"
     ),
     education_level = case_when(Education == 1 ~ "Low", #"8 years or below",
                           Education == 2 ~ "Medium", #"9-15 years",
@@ -88,8 +88,8 @@ lloyds_uk_clean<- lloyds_uk %>%
     Urbanicity = case_when(Urbanicity == 1 ~ "Rural",
                            Urbanicity == 2 ~ "Urban"),
     
-    HouseholdSize = case_when(HouseholdSize == 1 ~ "1-2",
-                              HouseholdSize == 2 ~ "3-4",
+    HouseholdSize = case_when(HouseholdSize == 1 ~ "1_2",
+                              HouseholdSize == 2 ~ "3_4",
                               HouseholdSize %in% c(3,4) ~ "5+"),
     
     ChildrenInHousehold = case_when(ChildrenInHousehold == 0 ~ "No",
@@ -111,4 +111,4 @@ lloyds_uk_clean <- lloyds_uk_clean %>%
          Urbanicity, HouseholdSize, ChildrenInHousehold, climate_threat, Q3)
 
 
-
+write.csv(lloyds_uk_clean, "D:/Joel/Docs/Hackathon/hackathon/LRP_UK_clean.csv")
