@@ -58,31 +58,31 @@ distinct_protests <- Climate_protests %>%
 ```
 
 # Introduction
-This report brings together information on different metrics for measuring the UK population’s perceptions of climate change, with the aim of providing a resource for policy makers to monitor the impact of climate change and associated policies on UK society.
-
-# Public Perception of climate change threat 
+This report brings together information on different metrics for measuring the UK population’s perceptions of Climate Change, with the aim of providing a resource for policy makers to monitor the impact of Climate Change and associated policies on UK society.
 
 
-## Global worry
+
+## Global Concern of Climate Change
 
 ```{r global_map, echo=FALSE}
 # htmltools::includeHTML("concern_map.html") # need the map from Luis
 ```
 
+
+## Climate Change Concern by Age Group in North West Europe
 ```{r concern_bar, echo=FALSE}
 # htmltools::includeHTML("concern_bar.html") # need the map from Luis
 ```
 
 
 
-## Overall
 
-```{r}
+```{r, echo=FALSE}
 LRP_UK <- read.csv("LRP_UK_clean.csv")
 
 #### Overall figures of concerns
 
-LRP_UK <- LRP_UK %>% 
+LRP_UK <- LRP_UK %>%
   mutate(
     threat_percieved = case_when(Q3 == 1 ~ "Very serious",
                                  Q3 == 2 ~ "Somewhat serious",
@@ -91,20 +91,20 @@ LRP_UK <- LRP_UK %>%
   )
 
 
-threat_props <- LRP_UK %>% 
-  filter(!is.na(threat_percieved)) %>% 
-  group_by(Year) %>% 
-  count(threat_percieved) %>% 
+threat_props <- LRP_UK %>%
+  filter(!is.na(threat_percieved)) %>%
+  group_by(Year) %>%
+  count(threat_percieved) %>%
   mutate(perc = 100*n/sum(n))
 
 
 ### Set colours
-my_colours <- c(viridis(3, direction = -1), "#888888") 
+my_colours <- c(viridis(3, direction = -1), "#888888")
 
 
-fig <- plot_ly(threat_props, 
-               x = ~perc, 
-               y = ~Year, 
+fig <- plot_ly(threat_props,
+               x = ~perc,
+               y = ~Year,
                color = ~threat_percieved,
                name = ~threat_percieved,
                type = "bar",
@@ -112,8 +112,8 @@ fig <- plot_ly(threat_props,
                colors = rev(my_colours),
                hoverinfo = "text",
                text = ~ paste0(
-                 '</br>', threat_percieved, ":", 
-                 '</br>', round(perc, 1), "%")) %>% 
+                 '</br>', threat_percieved, ":",
+                 '</br>', round(perc, 1), "%")) %>%
   layout(
     title = "Perception of Climate Change Threat to Country in the Next 20 Years",
     barmode = "stack",
@@ -123,7 +123,7 @@ fig <- plot_ly(threat_props,
                   xanchor = "center",
                   x = 0.5))
 
-fig
+# fig
 
 
 
@@ -132,9 +132,12 @@ fig
 
 
 
-# Opinion on climate {.tabset}
+# Attitudes Towards Climate Change {.tabset}
+
+Plots generated using the Opinions and Lifestyle Survey (ONS) data.
 
 ## Attitute towards future environment
+
 ```{r, fig.width=8, echo = FALSE, fig.height=6}
 
 opn <- read.csv("OPN-data.csv")
@@ -237,16 +240,17 @@ ggplotly(p3)
 
 ```
 
-
+#
 
 ## {-}
 
 
-## Effect of demographics on perceptions
+## Effect of Demographics on Climate Change Perceptions
+Logistic regression generated using Lloyds Risk Poll data.
 
 ```{r}
 
-### Logistic regression looking at predictors of percieveing climate change as a risk to country
+### Logistic regression looking at predictors of perceiving climate change as a risk to country
 
 ## Set level orders/reference categories
 
@@ -352,11 +356,15 @@ ggplot(threat_plot_data, aes(x = OR, y = lev, colour = variable)) +
 
 
 ```
+# 
+
+Results presented are odds ratios that show the relative increase in odds of perceiving climate change as a threat compared to the reference category, whilst holding the other included factors constant. An odds ratio of 2 indicates that someone with the given characteristic would be twice as likely to perceive climate change as a threat compared to the respective reference category, whilst an odds ratio of 0.5 would suggest someone is half as likely. Odds ratios are also presented with accompanying confidence intervals at the 95% level.
 
 
 
+# Public Support for Policy and Personal Changes {.tabset}
 
-# Public Support for Policy and personal changes {.tabset}
+First 4 plots have been generated using the UK Department for Business, Energy and Industrial Strategy data, and the final plot has been generated using the Opinions and Lifestyle Survey (ONS) data.
 
 ## Policies 
 
@@ -917,7 +925,7 @@ fig
 
 ```
 
-## Barriers to Personal Change
+## Barriers to personal change
 ```{r, fig.width=8, fig.height=15}
 p4 = ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
@@ -996,3 +1004,11 @@ b
 
 
 # References
+
+* ACLED Data on Global Protests:  Data Export Tool - ACLED (acleddata.com)
+* BEIS Survey on Public Awareness and Perceptions of Climate Change: Climate change and net zero: public awareness and perceptions - GOV.UK (www.gov.uk)
+* Google Trends: https://trends.google.com/trends/?geo=GB,
+* Lloyds Risk Poll for Resilience from 2021: World Risk Poll Resilience Index - The Lloyd's Register Foundation World Risk Poll (lrfoundation.org.uk)
+* Options and Lifestyle Survey (ONS): Data on public attitudes to the environment and the impact of climate change, Great Britain - Office for National Statistics (ons.gov.uk)
+* The Climate Change Twitter Dataset: The Climate Change Twitter Dataset | Kaggle
+* Twitter Follower Information: https://socialblade.com/
