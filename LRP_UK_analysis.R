@@ -2,6 +2,7 @@
 ### Analysis of LRP for UK
 
 library(tidyverse)
+library(plotly)
 
 LRP_UK <- read.csv("D:/Joel/Docs/Hackathon/hackathon/LRP_UK_clean.csv")
 
@@ -22,6 +23,48 @@ threat_props <- LRP_UK %>%
   group_by(Year) %>% 
   count(threat_percieved) %>% 
   mutate(perc = 100*n/sum(n))
+
+
+my_colours <- c("#99c140", "#e7b416", "#cc3232", "#888888") ## use traffic light colour system
+#my_colours <- c(scales::muted(my_colours, l = 70, c = 90), "#888888")
+
+
+fig <- plot_ly(threat_props, 
+               x = ~perc, 
+               y = ~Year, 
+               color = ~threat_percieved,
+               name = ~threat_percieved,
+               type = "bar",
+               orientation = "h",
+               colors = rev(my_colours),
+               hoverinfo = "text",
+               text = ~ paste0(
+                 '</br>', threat_percieved, ":", 
+                 '</br>', round(perc, 1), "%")) %>% 
+  layout(
+    title = "Perception of Climate Change Threat to Country in the Next 20 Years",
+    barmode = "stack",
+    xaxis = list(showgrid = T, zeroline = T, showticklabels = T, title = FALSE),
+               yaxis = list(showgrid = FALSE, zeroline = FALSE, title = FALSE),
+               legend = list(orientation = "h",
+                             xanchor = "center",
+                             x = 0.5))
+
+# %>% layout(title = "Liklihood of making changes in the next 6 months", showlegend = T,
+#            grid=list(rows=2, columns=2),
+#            xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+#            yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
+#            legend = list(orientation = "h",
+#                          xanchor = "center",
+#                          x = 0.5))
+
+
+fig
+
+fig <- plot_ly(marker = list(colors = my_colours))
+
+
+
 
 
 ################################
