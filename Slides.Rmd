@@ -1,0 +1,77 @@
+---
+title: "Slides"
+author: "ONS Health Surveillance"
+date: "10/11/2022"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+```
+
+```{r libraries, include=FALSE}
+library(leaflet)
+library(tmap)
+library(ggplot2)
+library(cowplot)
+library(viridis)
+library(plotly)
+library(readODS)
+library(stringr)
+library(dplyr)
+library(haven)
+```
+
+## Slide with Bullets
+
+This report brings together information on different metrics for measuring the UK population’s perceptions of climate change, with the aim of providing a resource for policy makers to monitor the impact of climate change and associated policies on UK society.
+
+## Slide with R Output
+
+```{r occurrence, echo=FALSE}
+ACLED_UK_clean <- read.csv("ACLED_UK_clean.csv", row.names = 1)
+UK_sf <- rnaturalearth::ne_countries(scale = 50, country = "United Kingdom", returnclass = "sf") 
+
+ACLED_UK_clean <- read.csv("ACLED_UK_clean.csv", row.names = 1)
+
+#Convert dataframe into spatial object
+ACLED_sf <- sf::st_as_sf(ACLED_UK_clean,
+                         coords = c("longitude", "latitude"),
+                         crs = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
+
+Climate_protests <- ACLED_sf %>%
+  dplyr::filter(.data$climate == "Y") %>%
+  dplyr::select(.data$data_id,
+                .data$action_group,
+                .data$date,
+                .data$sub_event_type,
+                .data$notes)
+
+distinct_protests <- Climate_protests %>%
+  dplyr::group_by(data_id) %>%
+  dplyr::slice(1) %>%
+  dplyr::ungroup()
+tmap::tmap_leaflet(
+  tmap::tm_shape(distinct_protests) +
+    tmap::tm_symbols(col = "sub_event_type",
+                     size = 0.05,
+                     clustering = F,
+                     title.col="Protest type",
+                     id = "Protest",
+                     popup.vars = c("Protest by: " = "action_group",
+                                    "Date: " = "date")) +
+    tm_view(
+    alpha = 0.8,
+    symbol.size.fixed = TRUE
+    )
+  )  
+```
+
+## Slide with Plot
+
+```{r pressure}
+plot(pressure)
+```
+
