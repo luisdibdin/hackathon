@@ -33,10 +33,10 @@ library(haven)
 ```
 
 ```{r read_data, include=FALSE}
-ACLED_UK_clean <- read.csv("ACLED_UK_clean.csv", row.names = 1)
+ACLED_UK_clean <- read.csv("data/ACLED_UK_clean.csv", row.names = 1)
 UK_sf <- rnaturalearth::ne_countries(scale = 50, country = "United Kingdom", returnclass = "sf") 
 
-ACLED_UK_clean <- read.csv("ACLED_UK_clean.csv", row.names = 1)
+ACLED_UK_clean <- read.csv("data/ACLED_UK_clean.csv", row.names = 1)
 
 #Convert dataframe into spatial object
 ACLED_sf <- sf::st_as_sf(ACLED_UK_clean,
@@ -62,23 +62,32 @@ This report brings together information on different metrics for measuring the U
 
 
 
-## Global Concern of Climate Change
+# Global Concern of Climate Change
 
-```{r global_map, echo=FALSE}
-# htmltools::includeHTML("concern_map.html") # need the map from Luis
+Plots generated using the Lloyds Risk Poll data.
+
+```{r global_map, fig.width=8, echo = FALSE, fig.height=6}
+htmltools::includeHTML("plots/concern_map.html") 
 ```
 
 
-## Climate Change Concern by Age Group in North West Europe
+#
+% threat is defined as seeing Climate Change as a very serious or somewhat serious threat to their country over the next 20 years. 
+
+
+# Climate Change Concern by Age Group in North West Europe
+
+Plots generated using the Lloyds Risk Poll data.
+
 ```{r concern_bar, echo=FALSE}
-# htmltools::includeHTML("concern_bar.html") # need the map from Luis
+htmltools::includeHTML("plots/concern_bar.html")
 ```
 
 
 
 
 ```{r, echo=FALSE}
-LRP_UK <- read.csv("LRP_UK_clean.csv")
+LRP_UK <- read.csv("data/LRP_UK_clean.csv")
 
 #### Overall figures of concerns
 
@@ -140,7 +149,7 @@ Plots generated using the Opinions and Lifestyle Survey (ONS) data.
 
 ```{r, fig.width=8, echo = FALSE, fig.height=6}
 
-opn <- read.csv("OPN-data.csv")
+opn <- read.csv("data/OPN-data.csv")
 
 
 ## bar plots 
@@ -356,7 +365,7 @@ ggplot(threat_plot_data, aes(x = OR, y = lev, colour = variable)) +
 
 
 ```
-# 
+<br />
 
 Results presented are odds ratios that show the relative increase in odds of perceiving climate change as a threat compared to the reference category, whilst holding the other included factors constant. An odds ratio of 2 indicates that someone with the given characteristic would be twice as likely to perceive climate change as a threat compared to the respective reference category, whilst an odds ratio of 0.5 would suggest someone is half as likely. Odds ratios are also presented with accompanying confidence intervals at the 95% level.
 
@@ -370,7 +379,7 @@ First 4 plots have been generated using the UK Department for Business, Energy a
 
 ```{r, echo = F}
 
-beis_spreadsheet <- read.ods("BEIS_Data_Tables.ods")
+beis_spreadsheet <- read.ods("data/BEIS_Data_Tables.ods")
 
 
 ### Policies ######## 
@@ -946,7 +955,9 @@ ggplotly(p4)
 
 ## {-}
 
-# Protests {.tabset}
+# Climate change related activisim in the UK {.tabset}
+
+Plots have been generated using the ACLED data, Twitter follower data, Kaggle data and Google Trends data.
 
 ## Where are protests happening?
 
@@ -971,7 +982,7 @@ tmap::tmap_leaflet(
 ## Which groups are growing membership?
 ```{r groups, echo=FALSE}
 
-twitter_data <- read.csv("tidy_twitter_data_char_removed.csv")
+twitter_data <- read.csv("data/tidy_twitter_data_char_removed.csv")
 twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
 
 twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
@@ -987,9 +998,14 @@ plotly::ggplotly(trends)
 
 ```
 
-## Which groups are searched for on google?
+## How many people are tweeting about Climate Change?
+```{r twitter, echo = FALSE}
+htmltools::includeHTML("plots/twitter_timeseries.html") 
+```
+
+## Which groups are searched for on Google?
 ```{r gtrends, echo = F}
-interest_over_time <- readr::read_csv("gtrends_interest_over_time.csv")
+interest_over_time <- readr::read_csv("data/gtrends_interest_over_time.csv")
 a <- ggplot(interest_over_time)+
   geom_line(aes(x = date, y = as.numeric(hits), colour = keyword))
 
@@ -998,6 +1014,8 @@ b <-  plotly::ggplotly(a)
 b
 
 ```
+
+
 
 ## {-}
 
