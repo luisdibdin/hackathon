@@ -991,7 +991,8 @@ twitter_data$Date <- lubridate::my(twitter_data$Date)
 twitter_data <- dplyr::rename(twitter_data, `Protest group` = `Twitter.Handle`)
 
 trends <- ggplot(twitter_data) +
-  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
+  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`)) +
+  ylab("Log10(Number of followers)")
 
 plotly::ggplotly(trends)
 
@@ -1007,7 +1008,8 @@ htmltools::includeHTML("plots/twitter_timeseries.html")
 ```{r gtrends, echo = F}
 interest_over_time <- readr::read_csv("data/gtrends_interest_over_time.csv")
 a <- ggplot(interest_over_time)+
-  geom_line(aes(x = date, y = as.numeric(hits), colour = keyword))
+  geom_line(aes(x = date, y = as.numeric(hits), colour = keyword)) +
+  labs(x = "Date", y = "Number of hits", colour = "Protest group") 
 
 b <-  plotly::ggplotly(a)
 
