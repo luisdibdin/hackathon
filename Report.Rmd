@@ -86,18 +86,18 @@ tmap::tmap_leaflet(
 
 ## Which groups are growing membership?
 ```{r groups, echo=FALSE}
-twitter_data <- read.csv("tidy_twitter_data.csv")
-twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
-                                  
-twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
-
-twitter_data$Date <- lubridate::my(twitter_data$Date)
-twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`) 
-
-trends <- ggplot(twitter_data) +
-  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
-
-plotly::ggplotly(trends)
+# twitter_data <- read.csv("tidy_twitter_data.csv")
+# twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
+#                                   
+# twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
+# 
+# twitter_data$Date <- lubridate::my(twitter_data$Date)
+# twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`) 
+# 
+# trends <- ggplot(twitter_data) +
+#   geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
+# 
+# plotly::ggplotly(trends)
 
 ```
 
@@ -117,8 +117,8 @@ b
 
 # Opinion on climate from OPN {.tabset}
 
-## Plot 1
-```{r, echo = FALSE}
+## Attitute towards Future Environment
+```{r, fig.width=8, echo = FALSE, fig.height=6}
 
 opn <- read.csv("OPN-data.csv")
 
@@ -134,75 +134,109 @@ opn_long$percentage <- as.numeric(opn_long$percentage)
 
 # each table needs to be its own object 
 table1 <- opn_long[opn_long$Table == "1",]
+table1$opinion <- factor(table1$opinion, levels = c(
+  "Very positive", 
+  "Somewhat positive",
+  "Neither positive nor negative", 
+  "Somewhat negative",
+  "Very negative"), ordered = TRUE)  
+
+
 table2 <- opn_long[opn_long$Table == "2",]
+table2$opinion <- factor(table2$opinion, levels = c(
+ "Not at all worried",
+ "Somewhat unworried",
+ "Neither worried nor unworried",
+ "Somewhat worried"), ordered = TRUE) 
+
 table3 <- opn_long[opn_long$Table == "3",]
+table3$opinion <- factor(table3$opinion, levels = c(
+ "Not at all anxious",
+ "Somewhat unanxious",
+ "Neither anxious nor unanxious",
+ "Somewhat anxious"), ordered = TRUE)
+
 table4 <- opn_long[opn_long$Table == "4",]
 
-
-ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
+p1 = ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
   theme_cowplot(12) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        plot.margin = margin(1.5,1,1,1.2, "cm")) +
+    ylim(c(0,100)) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30), 
+                       direction = -1) +
   ggtitle("How positive or negative do you currently feel when \nyou think about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
 
+ggplotly(p1)
+
 ```
 
-## Plot 2
-```{r}
+## Worries about Climate Change
+```{r, fig.width=8, fig.height=6}
 
-ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
+p2 = ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
   theme_cowplot(12) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        plot.margin = margin(1.5,1,1,1.2, "cm")) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  scale_fill_viridis_d(labels= function(x) stringr::str_wrap(x, width = 30),                         direction = -1) +
+  ylim(c(0,100)) +
   ggtitle("How worried or unworried are you about the impact \nof climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
+ggplotly(p2)
+
 ```
 
 
-## Plot 3
-```{r}
+## Anxiety over Future Environment
+```{r, fig.width=8, fig.height=6}
 
-
-ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
+p3 = ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
   theme_cowplot(12) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), 
+        plot.margin = margin(1.5,1,1,1.2, "cm")) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
+    ylim(c(0,100)) +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  scale_fill_viridis_d(labels= function(x) stringr::str_wrap(x, width = 30),                         direction = -1) +
   ggtitle("Over the past month how anxious, if at all, \nhave you felt about the future of the environment?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
+ggplotly(p3)
+
 ```
 
-## Plot 4
-```{r, fig.width=7, fig.height=15}
-ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
+## Lifestyle Change Barriers
+```{r, fig.width=8, fig.height=15}
+p4 = ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
   theme_cowplot(12) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position = "none",
+        plot.margin = margin(4,1,1,1.2, "cm")) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
-  scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
+  scale_fill_viridis_d(labels= function(x) stringr::str_wrap(x, width = 30),                         direction = -1) +
   ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) +
   facet_wrap(~opinion, ncol = 1)
+
+ggplotly(p4)
 ```
 
 ## {-}
