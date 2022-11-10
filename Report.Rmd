@@ -88,11 +88,11 @@ tmap::tmap_leaflet(
 ```{r groups, echo=FALSE}
 twitter_data <- read.csv("tidy_twitter_data.csv")
 twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
-                                  
+
 twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
 
 twitter_data$Date <- lubridate::my(twitter_data$Date)
-twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`) 
+twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`)
 
 trends <- ggplot(twitter_data) +
   geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
@@ -232,8 +232,8 @@ threat_props <- LRP_UK %>%
   mutate(perc = 100*n/sum(n))
 
 
-my_colours <- c("#99c140", "#e7b416", "#cc3232", "#888888") ## use traffic light colour system
-#my_colours <- c(scales::muted(my_colours, l = 70, c = 90), "#888888")
+### Set colours
+my_colours <- c(viridis(3, direction = -1), "#888888") 
 
 
 fig <- plot_ly(threat_props, 
@@ -254,8 +254,8 @@ fig <- plot_ly(threat_props,
     xaxis = list(title = FALSE),
     yaxis = list(showgrid = FALSE, zeroline = FALSE, title = FALSE, tickvals = c(2019, 2021)),
     legend = list(orientation = "h",
-    xanchor = "center",
-    x = 0.5))
+                  xanchor = "center",
+                  x = 0.5))
 
 fig
 
@@ -344,9 +344,15 @@ for(i in vars){
 }
 
 
+level_ord <- str_replace_all(level_ord, "_", "-")
+
 threat_plot_data <- threat_plot_data %>% 
-  mutate(lev = factor(lev, levels = level_ord)) %>% 
-  arrange(lev)
+  mutate(
+    lev = str_replace_all(lev, "_", "-"),
+    variable = str_replace_all(variable, "_", " "),
+    #variable = tolower(variable),
+    lev = factor(lev, levels = level_ord)) %>% 
+  arrange(lev) 
 
 
 ### Plot
@@ -458,10 +464,8 @@ for(i in 1:length(tables)){
 
 statement2 <- stringr::str_wrap(statement, width = 15)
 
-### Use red, amber, green colours
-#my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
-my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232")#, "#888888") ## use traffic light colour system
-my_colours <- c(scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
+### Set colours
+my_colours <- c(viridis(5, direction = -1), "#888888") 
 
 
 ######################## Plot ###############################################
@@ -502,7 +506,7 @@ for(i in c(1:6)){
                     xanchor = "center",
                     yanchor = "center",
                     showarrow = FALSE,
-                    textfont = list(family = "sans serif", size = 12))
+                    font = list(family = "calibri", size = 11))
     #layout(annotations = list(text = statement[i]))
 }
 
@@ -603,10 +607,8 @@ for(i in 1:length(tables)){
 
 statement2 <- str_wrap(statement, width = 15)
 
-### Use red, amber, green colours
-#my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
-my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232")#, "#888888") ## use traffic light colour system
-my_colours <- c("#238b45", scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
+### Set colours
+my_colours <- c(viridis(6, direction = -1), "#888888") 
 
 
 ######################## Plot ###############################################
@@ -625,7 +627,7 @@ fig <- plot_ly(marker = list(colors = my_colours))
 
 ## set centres of each subplot
 x_centres <- rep(c(2.1/9, 6.9/9), 2) ## This was done through trial and error, may need to adjust in markdown
-y_centres <- c(rep(5/6, 2), rep(1/6, 2))
+y_centres <- c(rep(11.25/13, 2), rep(1.75/13, 2))
 
 
 ### Create each subplot
@@ -648,7 +650,8 @@ for(i in c(1:4)){
                     yref = "paper",
                     xanchor = "center",
                     yanchor = "center",
-                    showarrow = FALSE)
+                    showarrow = FALSE,
+                    font = list(family = "calibri", size = 11))
   #layout(annotations = list(text = statement[i]))
 }
 
@@ -740,10 +743,8 @@ for(i in 1:length(tables)){
 
 statement2 <- str_wrap(statement, width = 15)
 
-### Use red, amber, green colours
-#my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
-my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232")#, "#888888") ## use traffic light colour system
-my_colours <- c(scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
+### Set colours
+my_colours <- c(viridis(5, direction = -1), "#888888") 
 
 
 ######################## Plot ###############################################
@@ -786,7 +787,8 @@ for(i in c(1:2)){
                     yref = "paper",
                     xanchor = "center",
                     yanchor = "center",
-                    showarrow = FALSE)
+                    showarrow = FALSE,
+                    font = list(family = "calibri", size = 13))
   #layout(annotations = list(text = statement[i]))
 }
 
@@ -875,10 +877,8 @@ for(i in 1:length(tables)){
 
 statement2 <- str_wrap(statement, width = 15)
 
-### Use red, amber, green colours
-#my_colours <- c(RColorBrewer::brewer.pal(5, "Blues"), "#888888")
-my_colours <- c("#2dc937", "#99c140", "#e7b416", "#db7b2b", "#cc3232")#, "#888888") ## use traffic light colour system
-my_colours <- c("#238b45", scales::muted(my_colours, l = 70, c = 90), "#888888") ## muting colours slightly
+### Set colours
+my_colours <- c(viridis(6, direction = -1), "#888888") 
 
 
 ######################## Plot ###############################################
@@ -918,7 +918,8 @@ for(i in c(1:3)){
                     yref = "paper",
                     xanchor = "center",
                     yanchor = "center",
-                    showarrow = FALSE)
+                    showarrow = FALSE,
+                    font = list(family = "calibri", size = 11))
   #layout(annotations = list(text = statement[i]))
 }
 
