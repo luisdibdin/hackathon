@@ -86,6 +86,31 @@ tmap::tmap_leaflet(
 
 ## Which groups are growing membership?
 ```{r groups, echo=FALSE}
+twitter_data <- read.csv("tidy_twitter_data.csv")
+twitter_data[,2:36] <- as.data.frame(sapply(twitter_data[,2:36], as.numeric))
+                                  
+twitter_data <- tidyr::pivot_longer(twitter_data, 2:36, names_to = "Date")
+
+twitter_data$Date <- lubridate::my(twitter_data$Date)
+twitter_data <- dplyr::rename(twitter_data, `Protest group` = `ï..Twitter.Handle`) 
+
+trends <- ggplot(twitter_data) +
+  geom_line(aes(x = Date, y = log10(value), colour = `Protest group`))
+
+plotly::ggplotly(trends)
+
+```
+
+## Which groups are searched for on google?
+```{r gtrends, echo = F}
+interest_over_time <- readr::read_csv("gtrends_interest_over_time.csv")
+a <- ggplot(interest_over_time)+
+  geom_line(aes(x = date, y = as.numeric(hits), colour = keyword))
+
+b <-  plotly::ggplotly(a)
+
+b
+
 ```
 
 ## {-}
