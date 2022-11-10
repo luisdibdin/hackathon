@@ -1,5 +1,7 @@
+.vscode
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-*.html
+climate_tweets.csv
+climate_tweets_uk.csv
