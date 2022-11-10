@@ -50,18 +50,8 @@ fig <- plot_ly(threat_props,
                              xanchor = "center",
                              x = 0.5))
 
-# %>% layout(title = "Liklihood of making changes in the next 6 months", showlegend = T,
-#            grid=list(rows=2, columns=2),
-#            xaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-#            yaxis = list(showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE),
-#            legend = list(orientation = "h",
-#                          xanchor = "center",
-#                          x = 0.5))
-
-
 fig
 
-fig <- plot_ly(marker = list(colors = my_colours))
 
 
 
