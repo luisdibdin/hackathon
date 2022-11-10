@@ -114,7 +114,7 @@ table4 <- opn_long[opn_long$Table == "4",]
 
 ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
-  theme_cowplot(16) + 
+  theme_cowplot(12) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   labs(y = "Percentage (%)", 
        x = "Region",
@@ -131,14 +131,14 @@ ggplot(table1, aes(fill = opinion, y = percentage, x = region)) +
 
 ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
-  theme_cowplot(16) + 
+  theme_cowplot(12) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
   scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
-  ggtitle("How worried or unworried are you about the impact of climate change?") +
+  ggtitle("How worried or unworried are you about the impact \nof climate change?") +
   geom_vline(xintercept=1.5, linetype="dashed", lwd = 1)
 
 ```
@@ -150,7 +150,7 @@ ggplot(table2, aes(fill = opinion, y = percentage, x = region)) +
 
 ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
-  theme_cowplot(16) + 
+  theme_cowplot(12) + 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
   labs(y = "Percentage (%)", 
        x = "Region",
@@ -163,18 +163,19 @@ ggplot(table3, aes(fill = opinion, y = percentage, x = region)) +
 ```
 
 ## Plot 4
-```{r}
+```{r, fig.width=7, fig.height=15}
 ggplot(table4, aes(fill = opinion, y = percentage, x = region)) +
   geom_bar(position="stack", stat="identity") +
-  theme_cowplot(16) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  labs(y = "Number of votes", 
+  theme_cowplot(12) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position = "none") +
+  labs(y = "Percentage (%)", 
        x = "Region",
        fill = "") +
   scale_x_discrete(labels = function(x) stringr::str_wrap(x, width = 10)) +
   scale_fill_viridis_d(labels = function(x) stringr::str_wrap(x, width = 30)) +
   ggtitle("For what reasons have you not made any \nchanges to your lifestyle to tackle climate change?") +
-  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) 
+  geom_vline(xintercept=1.5, linetype="dashed", lwd = 1) +
+  facet_wrap(~opinion, ncol = 1)
 ```
 
 ## {-}
